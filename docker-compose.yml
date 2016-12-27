@@ -1,0 +1,29 @@
+version: '2'
+services:
+
+  #db
+  db:
+    build: "./data/db"
+    volumes:
+      - "/var/lib/mysql"
+    ports:
+      - "3306:3306"
+
+  #php-fpm
+  php-fpm:
+    build: "./data/php-fpm"
+    volumes:
+      - "./relay:/var/relay"
+    links:
+      - "db"
+
+  #nginx
+  nginx:
+    build: "./data/nginx"
+    volumes:
+      - "./relay:/var/relay"
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - "php-fpm:php"
